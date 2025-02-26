@@ -11,8 +11,20 @@ const DATA_FILE = 'data.json';
 let players = {};
 let teams = {};
 let tournoiParticipants = [];
-const CREATOR_ID = 1687928453;
+const CREATOR_ID = 5116530698; // ID de @ALTOF2
+const CHANNEL_ID = "@sineur_x_bot"; // Canal à suivre
 let pending_requests = {};
+
+// Fonction pour vérifier si l'utilisateur est membre du canal
+async function checkSubscription(userId, ctx) {
+  try {
+    const member = await ctx.telegram.getChatMember(CHANNEL_ID, userId);
+    return ['creator', 'administrator', 'member'].includes(member.status);
+  } catch (error) {
+    console.error("Erreur lors de la vérification d'abonnement:", error);
+    return false;
+  }
+}
 
 // Charger les données
 function loadData() {
@@ -60,6 +72,18 @@ const missions = [
 bot.command('start', async (ctx) => {
   const user = ctx.from;
   const userId = user.id;
+  
+  // Vérifier l'abonnement à la chaîne
+  const isSubscribed = await checkSubscription(userId, ctx);
+  
+  if (!isSubscribed) {
+    return ctx.reply(
+      `⚠️ Pour utiliser ce bot, vous devez être abonné à notre chaîne.\n\nVeuillez vous abonner à ${CHANNEL_ID} puis réessayez avec /start`,
+      Markup.inlineKeyboard([
+        [Markup.button.url('📢 S\'abonner à la chaîne', `https://t.me/sineur_x_bot`)]
+      ])
+    );
+  }
 
   // Ajouter le joueur
   if (!players[userId]) {
@@ -101,10 +125,11 @@ bot.command('start', async (ctx) => {
   // Message de bienvenue avec photo
   try {
     await ctx.replyWithPhoto(
-      { source: 'welcome.webp' },
+      { source: 'welcome.jpg' },
       {
         caption: `Bienvenue ${user.first_name} dans l'univers de Naruto ! 🌸\nChoisis ton village pour commencer ton aventure.\nUtilise /village <nom du village> pour choisir un village.`,
-        reply_markup: keyboard
+        reply_markup: keyboard,
+        parse_mode: 'Markdown'
       }
     );
   } catch (error) {
@@ -133,14 +158,14 @@ bot.on('callback_query', async (ctx) => {
     case 'developer_info':
       caption = (
         "🧑‍💻 **DÉVELOPPEUR** 🧑‍💻\n\n" +
-        "- Nom : 𝐍𝐄𝐓𝐅𝐋𝐀𝐒𝐇 𝐃𝐈𝐄𝐔 𝐌𝐀𝐔𝐑𝐈𝐂𝐄\n" +
-        "- Contact : @mauridieu\n" +
-        "- ID : 1687928453\n\n" +
+        "- Nom : 𝓢𝓲𝓷𝓮𝓾𝓻\n" +
+        "- Contact : @ALTOF2\n" +
+        "- ID : 5116530698\n\n" +
         "Merci d'utiliser ce bot ! 🚀"
       );
       break;
     case 'creator_info':
-      caption = "🕵 **CRÉATEUR** 🕵\n\nDécouvrez le créateur ici : [Clique ici](https://t.me/GameFrench)";
+      caption = "🕵 **CRÉATEUR** 🕵\n\nDécouvrez le créateur ici : [𝓢𝓲𝓷𝓮𝓾𝓻](https://t.me/ALTOF2)";
       break;
     case 'user_commands':
       caption = (
@@ -201,8 +226,22 @@ bot.on('callback_query', async (ctx) => {
 });
 
 // Commande village
-bot.command('village', (ctx) => {
+bot.command('village', async (ctx) => {
   const user = ctx.from;
+  const userId = user.id;
+  
+  // Vérifier l'abonnement à la chaîne
+  const isSubscribed = await checkSubscription(userId, ctx);
+  
+  if (!isSubscribed) {
+    return ctx.reply(
+      `⚠️ Pour utiliser ce bot, vous devez être abonné à notre chaîne.\n\nVeuillez vous abonner à ${CHANNEL_ID} puis réessayez`,
+      Markup.inlineKeyboard([
+        [Markup.button.url('📢 S\'abonner à la chaîne', `https://t.me/sineur_x_bot`)]
+      ])
+    );
+  }
+  
   const village = ctx.message.text.split(' ').slice(1).join(' ');
 
   if (!villages.includes(village)) {
@@ -215,8 +254,22 @@ bot.command('village', (ctx) => {
 });
 
 // Commande clan
-bot.command('clan', (ctx) => {
+bot.command('clan', async (ctx) => {
   const user = ctx.from;
+  const userId = user.id;
+  
+  // Vérifier l'abonnement à la chaîne
+  const isSubscribed = await checkSubscription(userId, ctx);
+  
+  if (!isSubscribed) {
+    return ctx.reply(
+      `⚠️ Pour utiliser ce bot, vous devez être abonné à notre chaîne.\n\nVeuillez vous abonner à ${CHANNEL_ID} puis réessayez`,
+      Markup.inlineKeyboard([
+        [Markup.button.url('📢 S\'abonner à la chaîne', `https://t.me/sineur_x_bot`)]
+      ])
+    );
+  }
+  
   const clan = ctx.message.text.split(' ').slice(1).join(' ');
 
   if (!clans.includes(clan)) {
@@ -1135,8 +1188,29 @@ bot.command('restart', async (ctx) => {
 });
 
 
-// Auto-save
+// Middleware pour vérifier l'abonnement pour toutes les commandes
 bot.use(async (ctx, next) => {
+  // Skip la vérification pour /start car elle a sa propre vérification
+  if (ctx.message && ctx.message.text && ctx.message.text.startsWith('/start')) {
+    await next();
+    return;
+  }
+  
+  // Vérifier l'abonnement uniquement pour les commandes
+  if (ctx.message && ctx.message.text && ctx.message.text.startsWith('/')) {
+    const userId = ctx.from.id;
+    const isSubscribed = await checkSubscription(userId, ctx);
+    
+    if (!isSubscribed) {
+      return ctx.reply(
+        `⚠️ Pour utiliser ce bot, vous devez être abonné à notre chaîne.\n\nVeuillez vous abonner à ${CHANNEL_ID} puis réessayez`,
+        Markup.inlineKeyboard([
+          [Markup.button.url('📢 S\'abonner à la chaîne', `https://t.me/sineur_x_bot`)]
+        ])
+      );
+    }
+  }
+  
   await next();
   saveData(players);
   saveData(teams);
