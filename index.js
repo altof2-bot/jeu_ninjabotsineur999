@@ -98,13 +98,10 @@ bot.command('start', async (ctx) => {
     ]
   ]);
 
-  // Message de bienvenue
-  await ctx.replyWithPhoto(
-    { source: 'file-XJ6bJgcmMRMLREgdZbTx9m.webp' },
-    {
-      caption: `Bienvenue ${user.first_name} dans l'univers de Naruto ! 🌸\nChoisis ton village pour commencer ton aventure.\nUtilise /village <nom du village> pour choisir un village.`,
-      reply_markup: keyboard
-    }
+  // Message de bienvenue avec texte au lieu de photo
+  await ctx.reply(
+    `Bienvenue ${user.first_name} dans l'univers de Naruto ! 🌸\nChoisis ton village pour commencer ton aventure.\nUtilise /village <nom du village> pour choisir un village.`,
+    { reply_markup: keyboard }
   );
   saveData(players);
 });
