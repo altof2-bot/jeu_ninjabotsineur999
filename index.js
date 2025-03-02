@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require('telegraf');
 const fs = require('fs');
 
 // Configuration du bot
-const bot = new Telegraf('7593371180:AAHDOrLB5GebjIxFGiI0JZNv84-jc5kSVzA');
+const bot = new Telegraf('7853466701:AAH_M4bBj0k1_62mRY0UuszUv39b8rpdqWs');
 
 // Fichier pour sauvegarder les données
 const DATA_FILE = 'data.json';
@@ -11,7 +11,7 @@ const DATA_FILE = 'data.json';
 let players = {};
 let teams = {};
 let tournoiParticipants = [];
-const CREATOR_ID = 1687928453;
+const CREATOR_ID = 5116530698;
 let pending_requests = {};
 
 // Charger les données
