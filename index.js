@@ -100,7 +100,7 @@ bot.command('start', async (ctx) => {
 
   // Message de bienvenue sans image
   await ctx.reply(
-    `Bienvenue ${user.first_name} dans l'univers de Naruto ! 🌸\nChoisis ton village pour commencer ton aventure.\nUtilise /village <nom du village> pour choisir un village.`, 
+    `Bienvenue ${user.first_name} dans l'univers de Naruto ! 🌸\nChoisis ton village pour commencer ton aventure.\nUtilise /village <nom du village> pour choisir un village tuto du jeu ici https://t.me/sineur_x_bot/233 .`, 
     { reply_markup: keyboard }
   );
   saveData(players);
@@ -122,8 +122,8 @@ bot.on('callback_query', async (ctx) => {
       caption = (
         "🧑‍💻 **DÉVELOPPEUR** 🧑‍💻\n\n" +
         "- Nom : 𝐍𝐄𝐓𝐅𝐋𝐀𝐒𝐇 𝐃𝐈𝐄𝐔 𝐌𝐀𝐔𝐑𝐈𝐂𝐄\n" +
-        "- Contact : @mauridieu\n" +
-        "- ID : 1687928453\n\n" +
+        "- Contact : @altof2\n" +
+        "- ID : 5116530698\n\n" +
         "Merci d'utiliser ce bot ! 🚀"
       );
       break;
