@@ -1,6 +1,12 @@
 const { Telegraf, Markup } = require('telegraf');
 const fs = require('fs');
+const express = require('express');
+const app = express();
 
+const port = 80;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server listening on port ${port}`);
+});
 // Configuration du bot
 const bot = new Telegraf('7853466701:AAH_M4bBj0k1_62mRY0UuszUv39b8rpdqWs');
 
